@@ -1,4 +1,5 @@
 #include "../include/shader.hpp"
+#include <glm/gtc/type_ptr.hpp>
 
 Shader::Shader(std::string vs_path, std::string fs_path)
 {
@@ -75,9 +76,14 @@ Shader::Shader(std::string vs_path, std::string fs_path)
   glDeleteShader(fragment_shader);
 }
 
-Shader::~Shader()
+void Shader::terminate()
 {
   glDeleteProgram(shader_program);
+}
+
+void Shader::set_matrix4f_uniform(std::string name, glm::mat4 matrix)
+{
+  glUniformMatrix4fv(glGetUniformLocation(shader_program, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 unsigned int Shader::get_program() const

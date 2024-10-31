@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../include/shader.hpp"
 #include "../include/shape.hpp"
+#include "../include/camera.hpp"
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -26,7 +27,7 @@ int main()
 
   if (!window)
   {
-    std::cout << "ERROR: WINDOW NOT INITIALIZED" << std::endl;
+    std::cout << "ERROR: WINDOW NOT CREATED" << std::endl;
     glfwTerminate();
     return -1;
   }
@@ -40,14 +41,22 @@ int main()
     return -1;
   }
 
+  glEnable(GL_DEPTH_TEST);
 
   float vh = 300.0f / SCREEN_HEIGHT, vw = 300.0f / SCREEN_WIDTH;
 
-  float vertices[] = {
-    -vw, vh, 0.0f,
-    vw, vh, 0.0f,
-    vw, -vh, 0.0f,
-    -vw, -vh, 0.0f
+  glm::vec3 vertices[] = {
+    glm::vec3(-vw, vh, 0.0f),
+    glm::vec3(vw, vh, 0.0f),
+    glm::vec3(vw, -vh, 0.0f),
+    glm::vec3(-vw, -vh, 0.0f)
+  };
+
+  glm::vec3 colors[] = {
+    glm::vec3(1.0f, 0.0f, 0.0f),
+    glm::vec3(0.5f, 1.0f, 0.0f),
+    glm::vec3(0.0f, 1.0f, 1.0f),
+    glm::vec3(0.5f, 0.0f, 1.0f)
   };
 
   unsigned int indices[] = {
@@ -55,10 +64,12 @@ int main()
     0, 3, 2
   };
 
-  Shape square(vertices, indices, sizeof(vertices), sizeof(indices));
+  Shape square(vertices, colors, indices, sizeof(vertices), sizeof(colors), sizeof(indices));
 
 
   Shader shader("/home/THE_ALPHA_AND_THE_OMEGA/C++/simpGL/res/shaders/vertex.glsl", "/home/THE_ALPHA_AND_THE_OMEGA/C++/simpGL/res/shaders/fragment.glsl");
+
+  Camera camera = Camera();
 
 
   while (!glfwWindowShouldClose(window))
@@ -66,16 +77,17 @@ int main()
     glfwSetKeyCallback(window, key_callback);
 
     glClearColor(1.0f, 0.3f, 0.8f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    square.draw(shader);
+    square.draw(camera, shader);
 
     glfwSwapBuffers(window);
 
     glfwPollEvents();
   }
 
-
+  square.terminate();
+  shader.terminate();
   glfwTerminate();
 
   return 0;
