@@ -1,4 +1,5 @@
 #include "../include/shape.hpp"
+#include <GL/gl.h>
 #include <glm/ext/matrix_transform.hpp>
 
 Shape::Shape(glm::vec3* vertices, glm::vec3* colors, unsigned int* indices, size_t vertices_size, size_t colors_size, size_t indices_size)
