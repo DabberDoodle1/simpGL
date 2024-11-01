@@ -11,9 +11,10 @@ class Shape
 public:
   Shape(glm::vec3* vertices, glm::vec3* colors, unsigned int* indices, size_t vertices_size, size_t colors_size, size_t indices_size);
   void terminate();
-  void draw(Camera camera, Shader shader) const;
+  void translate(glm::vec3 value);
+  void draw(Camera camera, Shader shader, unsigned int scale_factor) const;
 private:
   unsigned int VBO, VAO, EBO, indices_count;
-  glm::mat4 model;
+  glm::vec3 pos;
 };
 #endif
