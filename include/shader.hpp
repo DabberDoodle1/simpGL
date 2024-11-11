@@ -11,8 +11,10 @@
 class Shader
 {
 public:
-  Shader(std::string vs_path, std::string fs_path);
-  void set_matrix4f_uniform(std::string name, glm::mat4 matrix);
+  Shader(const char* vs_path, const char* fs_path);
+  ~Shader();
+  void set_matrix4(std::string name, glm::mat4 matrix) const;
+  void set_vec3(std::string name, glm::vec3 value) const;
   void terminate();
   unsigned int get_program() const;
 private:

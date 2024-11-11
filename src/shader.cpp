@@ -1,7 +1,7 @@
 #include "../include/shader.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
-Shader::Shader(std::string vs_path, std::string fs_path)
+Shader::Shader(const char* vs_path, const char* fs_path)
 {
   std::ifstream file_stream;
   std::stringstream string_stream;
@@ -11,7 +11,7 @@ Shader::Shader(std::string vs_path, std::string fs_path)
   int success;
   char error_log[1024];
 
-  file_stream.open(vs_path.c_str());
+  file_stream.open(vs_path);
   if(!file_stream.is_open())
   {
     std::cout << "ERROR: VERTEX SHADER FILE NOT FOUND" << std::endl;
@@ -37,7 +37,7 @@ Shader::Shader(std::string vs_path, std::string fs_path)
   string_stream.clear();
   string_stream.str(std::string());
 
-  file_stream.open(fs_path.c_str());
+  file_stream.open(fs_path);
   if(!file_stream.is_open())
   {
     std::cout << "ERROR: FRAGMENT SHADER FILE NOT FOUND" << std::endl;
@@ -76,17 +76,21 @@ Shader::Shader(std::string vs_path, std::string fs_path)
   glDeleteShader(fragment_shader);
 }
 
-void Shader::terminate()
+Shader::~Shader()
 {
-  glDeleteProgram(shader_program);
+  terminate();
 }
 
-void Shader::set_matrix4f_uniform(std::string name, glm::mat4 matrix)
+void Shader::terminate() { glDeleteProgram(shader_program); }
+
+void Shader::set_matrix4(std::string name, glm::mat4 matrix) const
 {
   glUniformMatrix4fv(glGetUniformLocation(shader_program, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
-unsigned int Shader::get_program() const
+void Shader::set_vec3(std::string name, glm::vec3 value) const
 {
-  return shader_program;
+  glUniform3fv(glGetUniformLocation(shader_program, name.c_str()), 1, &value[0]);
 }
+
+unsigned int Shader::get_program() const { return shader_program; }

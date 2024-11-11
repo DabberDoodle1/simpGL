@@ -26,10 +26,7 @@ Shape::Shape(glm::vec3* vertices, glm::vec3* colors, unsigned int* indices, size
   glBindVertexArray(0);
 }
 
-void Shape::translate(glm::vec3 value)
-{
-  pos += value;
-}
+void Shape::translate(glm::vec3 value) { pos += value; }
 
 void Shape::terminate()
 {
@@ -38,12 +35,12 @@ void Shape::terminate()
   glDeleteVertexArrays(1, &VAO);
 }
 
-void Shape::draw(Camera camera, Shader shader, unsigned int scale_factor) const
+void Shape::draw(Camera* camera, Shader* shader, unsigned int scale_factor) const
 {
   glBindVertexArray(VAO);
-  glUseProgram(shader.get_program());
-  shader.set_matrix4f_uniform("model", glm::translate(glm::mat4(1.0f), glm::vec3(pos.x / scale_factor, pos.y / scale_factor, pos.z / scale_factor)));
-  shader.set_matrix4f_uniform("view", camera.get_view());
-  shader.set_matrix4f_uniform("projection", camera.get_projection());
+  glUseProgram(shader->get_program());
+  shader->set_matrix4("model", glm::translate(glm::mat4(1.0f), glm::vec3(pos.x / scale_factor, pos.y / scale_factor, pos.z / scale_factor)));
+  shader->set_matrix4("view", camera->get_view());
+  shader->set_matrix4("projection", camera->get_projection());
   glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_INT, 0);
 }
